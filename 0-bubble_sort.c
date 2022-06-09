@@ -37,7 +37,7 @@ void bubble_sort(int *array, size_t size)
 			}
 		}
 
-		if (size == 1 || swapped == false)
+		if (size < 2 || swapped == false)
 			break;
 	}
 }
