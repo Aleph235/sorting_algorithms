@@ -8,16 +8,19 @@
  */
 void selection_sort(int *array, size_t size)
 {
-for (int i = 0; i < size - 1; i++)
-{
-	int min_pos = i;
+	size_t i;
+	size_t j;
 
-	for (int j = i + 1; j < size; j++)
+for (i = 0; i < size - 1; i++)
+{
+	size_t min_pos = i;
+
+	for (j = i + 1; j < size; j++)
 		if (array[j] < array[min_pos])
 			min_pos = j;
 	if (min_pos != i)
 	{
-		int temp = array[i];
+		size_t temp = array[i];
 
 		array[i] = array[min_pos];
 		array[min_pos] = temp;
