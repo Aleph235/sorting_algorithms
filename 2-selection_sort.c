@@ -24,7 +24,7 @@ for (i = 0; i < size - 1; i++)
 
 		array[i] = array[min_pos];
 		array[min_pos] = temp;
+		print_array(array, size);
 	}
-	print_array(array, size);
 }
 }
