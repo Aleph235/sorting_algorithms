@@ -1,25 +1,38 @@
 #include "sort.h"
 #include <stdlib.h>
-
-void insert_front(listint_t **head, listint_t *p1)
+#include <stdbool.h>
+/**
+ * insert_front - insert in front of list
+ * @list : pointer to head of list
+ * @node : pointer to node to be inserted
+ * Return: void
+ */
+void insert_front(listint_t **list, listint_t *node)
 {
-	p1->next = (*head);
-	p1->prev = NULL;
-
-	if ((*head) != NULL)
-		(*head)->prev = p1;
-	(*head) = p1;
+	node->prev->next = node->next;
+	if (node->next != NULL)
+		node->next->prev = node->prev;
+	(*list)->prev = node;
+	node->next = *list;
+	node->prev = NULL;
+	(*list) = node;
 
 }
-void insert_after(listint_t *prev_node, listint_t *p1)
+/**
+ * insert_before - insert before of next_node
+ * @next_node : pointer to last bigger than node node node node
+ * @node : pointer to node to be inserted before next node
+ * Return: void
+ */
+void insert_before(listint_t *next_node, listint_t *node)
 {
-	p1->prev->next = p1->next;
-	p1->next->prev = p1->prev;
-
-	if (p1->next != NULL)
-		p1->next->prev = p1;
-	else
-		p1->next->prev = NULL;
+	node->prev->next = node->next;
+	if (node->next != NULL)
+		node->next->prev = node->prev;
+	next_node->prev->next = node;
+	node->prev = next_node->prev;
+	next_node->prev = node;
+	node->next = next_node;
 }
 /**
  * insertion_sort_list - insert sort list
@@ -28,28 +41,41 @@ void insert_after(listint_t *prev_node, listint_t *p1)
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *i;
-	listint_t *j;
-	int data;
+	bool insert;
+	listint_t *i, *j, *i_suivant;
 
-	data = 0;
-	if (list == NULL || (*list)->next == NULL)
+
+	if (list == NULL || (*list)->next == NULL || *list == NULL)
 		return;
 
-	i = *list;
-
-	while (i->next != NULL)
+	insert = false;
+	i = (*list)->next;
+	while (i)
 	{
-		data = i->n;
-		j = i->next;
-		while (j->prev != NULL && data <= j->n)
+		if (i->n < i->prev->n)
 		{
-			if (i->prev == NULL)
-				insert_front(list, j);
-			insert_after(i, j);
+			insert = true;
+			j = i;
+			i_suivant = i->next;
+		}
+		else
+			i = i->next;
+		while (j && insert)
+		{
+			if (j->n < i->n)
+			{
+				insert_before(j->next, i);
+				i = i_suivant;
+				insert = false;
+			}
 			j = j->prev;
 		}
-		i = i->next;
-		print_list(*list);
+		if (insert)
+		{
+			insert_front(list, i);
+			i = i_suivant;
+			insert = false;
 		}
+		print_list(*list);
+	}
 }
