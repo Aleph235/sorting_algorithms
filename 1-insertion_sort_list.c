@@ -1,81 +1,34 @@
 #include "sort.h"
-#include <stdlib.h>
-#include <stdbool.h>
 /**
- * insert_front - insert in front of list
- * @list : pointer to head of list
- * @node : pointer to node to be inserted
- * Return: void
- */
-void insert_front(listint_t **list, listint_t *node)
-{
-	node->prev->next = node->next;
-	if (node->next != NULL)
-		node->next->prev = node->prev;
-	(*list)->prev = node;
-	node->next = *list;
-	node->prev = NULL;
-	(*list) = node;
-
-}
-/**
- * insert_before - insert before of next_node
- * @next_node : pointer to last bigger than node node node node
- * @node : pointer to node to be inserted before next node
- * Return: void
- */
-void insert_before(listint_t *next_node, listint_t *node)
-{
-	node->prev->next = node->next;
-	if (node->next != NULL)
-		node->next->prev = node->prev;
-	next_node->prev->next = node;
-	node->prev = next_node->prev;
-	next_node->prev = node;
-	node->next = next_node;
-}
-/**
- * insertion_sort_list - insert sort list
- * @list: doubly linked list
- * Return: void
+ * insertion_sort_list - Sorts doubly linked list
+ * @list: pointer to pointer to head
  */
 void insertion_sort_list(listint_t **list)
 {
-	bool insert;
-	listint_t *i, *j, *i_suivant;
+	listint_t *i, *j, *key;
 
-
-	if (list == NULL || (*list)->next == NULL || *list == NULL)
+	if (list == NULL || *list == NULL || (*list)->next == NULL)
 		return;
 
-	insert = false;
 	i = (*list)->next;
 	while (i)
 	{
-		if (i->n < i->prev->n)
+		j = i;
+		while (j->prev != NULL && j->n < j->prev->n)
 		{
-			insert = true;
-			j = i;
-			i_suivant = i->next;
+			key = j->prev->prev;
+			if (j->prev->prev != NULL)
+				j->prev->prev->next = j;
+			j->prev->prev = j;
+			j->prev->next = j->next;
+			if (j->next != NULL)
+				j->next->prev = j->prev;
+			j->next = j->prev;
+			j->prev = key;
+			if (j->prev == NULL)
+				*list = j;
+			print_list(*list);
 		}
-		else
-			i = i->next;
-		while (j && insert)
-		{
-			if (j->n < i->n)
-			{
-				insert_before(j->next, i);
-				i = i_suivant;
-				insert = false;
-			}
-			j = j->prev;
-		}
-		if (insert)
-		{
-			insert_front(list, i);
-			i = i_suivant;
-			insert = false;
-		}
-		print_list(*list);
+		i = i->next;
 	}
 }
